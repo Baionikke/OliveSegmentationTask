@@ -9,14 +9,18 @@ from sklearn import preprocessing
 from mpl_toolkits.mplot3d import Axes3D
 from matplotlib import path
  
+#import dataset pre pruning
 inFilePre = File('C:/Users/crist/OneDrive/Documenti/Univpm/4° Anno/Computer Vision e Deep Learning/ProgettoUlivi/outputpre.las', mode='r')
 datasetpre = np.vstack([inFilePre.x, inFilePre.y, inFilePre.z]).transpose()
 datasetpre.shape
 
+
+#import dataset post pruning
 inFilePost = File('C:/Users/crist/OneDrive/Documenti/Univpm/4° Anno/Computer Vision e Deep Learning/ProgettoUlivi/outputpost.las', mode='r')
 datasetpost = np.vstack([inFilePost.x, inFilePost.y, inFilePost.z]).transpose()
 datasetpost.shape
 
+#import dataset for header
 input_path1 = "C:/Users/crist/OneDrive/Documenti/Univpm/4° Anno/Computer Vision e Deep Learning/ProgettoUlivi/DatasetUliviPre1/"
 dataname1 = "segmentazione10ulivipre"
 point_cloud1 = laspy.file.File(input_path1+dataname1+".las", mode="r")
@@ -47,6 +51,7 @@ def frange(start, stop, step):
 #                                             datasetfiltered))
 #print("dataset_Z_filtered shape", dataset_Z_filtered.shape)
 
+#print some specs of dataset pre
 print("Examining Point Format PRE: ")
 pointformat = inFilePre.point_format
 for spec in inFilePre.point_format:
@@ -59,6 +64,7 @@ print("Y max =", datasetpre[:, 1].max(), "Y min =", datasetpre[:, 1].min())
 print("X range =", datasetpre[:, 0].max() - datasetpre[:, 0].min())
 print("X max =", datasetpre[:, 0].max(), "X min =", datasetpre[:, 0].min())
 
+#print some specs of dataset post
 print("Examining Point Format POST: ")
 pointformat = inFilePost.point_format
 for spec in inFilePost.point_format:
@@ -73,6 +79,7 @@ print("X max =", datasetpost[:, 0].max(), "X min =", datasetpost[:, 0].min())
 
 #dataset = preprocessing.normalize(dataset)
 
+#clustering pre using DBSCAN
 clusteringpre = DBSCAN(eps=0.70, min_samples=450, leaf_size=1).fit(datasetpre)
 core_samples_maskpre = np.zeros_like(clusteringpre.labels_, dtype=bool)
 core_samples_maskpre[clusteringpre.core_sample_indices_] = True
@@ -82,6 +89,7 @@ n_noise_pre = list(labelspre).count(-1)
 print("Estimated number of clusters PRE: %d" % n_clusters_pre)
 print("Estimated number of noise points PRE: %d" % n_noise_pre)
 
+#clustering post using DBSCAN
 clusteringpost = DBSCAN(eps=0.70, min_samples=450, leaf_size=1).fit(datasetpost)
 core_samples_maskpost = np.zeros_like(clusteringpost.labels_, dtype=bool)
 core_samples_maskpost[clusteringpost.core_sample_indices_] = True
@@ -106,8 +114,10 @@ for k, col in zip(unique_labelspre, colors):
   class_member_mask = (labelspre == k)
   xyz = datasetpre[class_member_mask & core_samples_maskpre]
   axpre.scatter(xyz[:, 0], xyz[:, 1], xyz[:, 2], c=col, marker=".")
+  #save cluster in a file
   if j<n_clusters_pre:
     arrayNP = np.vstack(xyz).transpose()
+    #minimum cluster size control
     if arrayNP[0].size>1000:
       print("Scrittura file di outputPRE"+str(j-cluster_erratipre)+"...")
       outFile = laspy.file.File("C:/Users/crist/OneDrive/Documenti/Univpm/4° Anno/Computer Vision e Deep Learning/ProgettoUlivi/UliviClusterizzati/outputPRE"+str(j-cluster_erratipre)+".las", mode = "w", header = point_cloud1.header)
@@ -118,6 +128,7 @@ for k, col in zip(unique_labelspre, colors):
     else:
       cluster_erratipre=cluster_erratipre+1
     j=j+1
+#print number of clusters
 plt.title("Estimated number of REAL cluster PRE: "+str(n_clusters_pre-cluster_erratipre) )
 
 
@@ -136,8 +147,10 @@ for k, col in zip(unique_labelspost, colors):
   class_member_mask = (labelspost == k)
   xyz = datasetpost[class_member_mask & core_samples_maskpost]
   axpost.scatter(xyz[:, 0], xyz[:, 1], xyz[:, 2], c=col, marker=".")
+  #save cluster in a file
   if i<n_clusters_post:
     arrayNP = np.vstack(xyz).transpose()
+    #minimum cluster size control
     if arrayNP[0].size>1000:
       print("Scrittura file di outputPOST"+str(i-cluster_erratipost)+"...")
       outFile = laspy.file.File("C:/Users/crist/OneDrive/Documenti/Univpm/4° Anno/Computer Vision e Deep Learning/ProgettoUlivi/UliviClusterizzati/outputPOST"+str(i-cluster_erratipost)+".las", mode = "w", header = point_cloud1.header)
@@ -148,6 +161,8 @@ for k, col in zip(unique_labelspost, colors):
     else:
       cluster_erratipost=cluster_erratipost+1
     i=i+1
+#print number of clusters
 plt.title("Estimated number of REAL cluster POST: "+str(n_clusters_post-cluster_erratipost) )
 
+#plot all clusters
 plt.show()
