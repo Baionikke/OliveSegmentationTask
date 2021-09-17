@@ -11,7 +11,9 @@ Step to follow to estiamte crown volume. Run the following python scripts in thi
 The segmantation task is to be runned on a different location beacuase it does not participate in the volume calculation due to inaccurate results (dataset too small).
 
 Link to the colab script at the url: https://colab.research.google.com/drive/132XiPrUXfRpviJzv9Z6-qQLraH_IE1r1?usp=sharing
+
 Link to the pointnet dataset at the url: https://drive.google.com/drive/folders/1A7AB_OsJJw3sCRIMsgdqZmYz9b_8-K_O?usp=sharing
+
 Step to follow to run the colab script:
 1) Download the pointnet dataset from the link and upload to your local google drive
 2) Upload the dataset on /gdrive/MyDrive/ (everything is set up to run automatically with this path)
