@@ -5,13 +5,15 @@ import matplotlib.pyplot as plt
 
 plt.rcParams['figure.max_open_warning'] = 1000
 
-# Array contenente tutti i volumi + differenza volumi (vhpre|vhbspre|svpre|vhpost|vhbspost|svpost|vhdiff|vhbsdiff|svdiff)
+# Array with all volumes + volume difference (vhpre|vhbspre|svpre|vhpost|vhbspost|svpost|vhdiff|vhbsdiff|svdiff)
 w, h = 9, 10;
 arrayvolumi= [[0 for x in range(w)] for y in range(h)]
 
+# 20 = all olives number
 for contatore in range(20):
-    # Caricamento file
+    # Import file
     input_path = "C:/Users/crist/OneDrive/Documenti/Univpm/4° Anno/Computer Vision e Deep Learning/ProgettoUlivi/UliviClusterizzati/"
+    # 10 = n° olives pre pruning
     if(contatore<10):
         dataname = "outputPRE"+str(contatore)
     else:
@@ -19,7 +21,7 @@ for contatore in range(20):
     point_cloud = lp.file.File(input_path+dataname+".las", mode="r")
     print(dataname)
 
-    # Estrazione punti
+    # Points 
     points = np.vstack((point_cloud.x, point_cloud.y, point_cloud.z)).transpose()
 
     # Visualize .las file
@@ -49,6 +51,7 @@ for contatore in range(20):
 
     
     ### CONVEX HULL BY SLICE ###
+    # NOT used for output file
     point_cloud_ordered = np.sort(points, axis=0)
     h_min = np.min(point_cloud.z)
     h_max = np.max(point_cloud.z)
@@ -84,7 +87,7 @@ for contatore in range(20):
                                     tets[:, 2], tets[:, 3]))
     print("SECTION VOLUME: " + str(vol))
 
-    ### SCRITTURA ARRAY X SCRITTURA VOLUMI SU FILE (vhpre|vhbspre|svpre|vhpost|vhbspost|svpost|vhdiff|vhbsdiff|svdiff)
+    ### ARRAY WRITING FOR WRITING VOLUMES ON FILE (vhpre|vhbspre|svpre|vhpost|vhbspost|svpost|vhdiff|vhbsdiff|svdiff)
     if(contatore<10):
         arrayvolumi[contatore][0] = hull.volume
         arrayvolumi[contatore][1] = j
@@ -98,6 +101,7 @@ for i in range(10):
     arrayvolumi[i][7] = arrayvolumi[i][1] - arrayvolumi[i][4]
     arrayvolumi[i][8] = arrayvolumi[i][2] - arrayvolumi[i][5]
 
+# Output file
 file_output_vol = open("C:/Users/crist/OneDrive/Documenti/Univpm/4° Anno/Computer Vision e Deep Learning/ProgettoUlivi/UliviClusterizzati/VolumiCompleti.txt", "w")
 for i in range(10):
     file_output_vol.write("\n\nULIVO " + str(i))
@@ -105,6 +109,9 @@ for i in range(10):
     #file_output_vol.write("\nCONVEX HUL BY SLICE " + str(i) + " : (PRE|POST|DIFF) " + str(arrayvolumi[i][1]) + " | " + str(arrayvolumi[i][4]) + " | " + str(arrayvolumi[i][7]))
     file_output_vol.write("\nSECTION VOLUME " + str(i) + " : (PRE|POST|DIFF) " + str(arrayvolumi[i][2]) + " | " + str(arrayvolumi[i][5]) + " | " + str(arrayvolumi[i][8]))
 file_output_vol.close
+
+### VOXEL VOLUME IS NOT USED
+
 """
 ### VOXEL VOLUME ###
 factor = 150
@@ -126,7 +133,7 @@ for idx,vox,c in enumerate(non_empty_voxel_keys):
 
 #ax = plt.axes(projection='3d')
 #ax.scatter(decimated_points[:,0], decimated_points[:,1], decimated_points[:,2])#, c = decimated_colors/65535, s=0.01)
-#-------------------------------------------------------------------------------------------------------------------------------------------------------------plt.show()
+#plt.show()
 
 print("VOXEL VOLUME: ")
 """
