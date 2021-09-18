@@ -1,6 +1,9 @@
 # OliveSegmentationTask
 Segmentation task of olive trees in order to estimate crown volume before and after pruning and calculate the difference between them.
 
+In order to see the PowerPoint presentation, download the file from the link: https://docs.google.com/presentation/d/16F6ysCjtfzaV1FB_gQXneuE01lfUBlNv/edit?usp=sharing&ouid=104923152635233169452&rtpof=true&sd=true
+
+
 Step to follow to estiamte crown volume. Run the following python scripts in this sequence*:
 1) oliveDownsamp = DOWNSAMPLING OLIVES
 2) oliveCode = DBSCAN (CLUSTERIZATION)
